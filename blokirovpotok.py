@@ -1,4 +1,5 @@
 import threading
+from time import sleep
 
 class BankAccount(threading.Thread):
 
@@ -7,23 +8,27 @@ class BankAccount(threading.Thread):
         self.balance = 1000
 
     def deposit(self, amount):
+        sleep(1)
         self.balance = self.balance + amount
         print(f'Deposited {amount}, new balance is {self.balance}')
 
     def withdraw(self, amount):
+        sleep(1)
         self.balance = self.balance - amount
         print(f'Withdrew {amount}, new balance is {self.balance}')
 
 
-#lock = threading.Lock()
+lock = threading.Lock()
 account = BankAccount()
 def deposit_task(account, amount):
     for _ in range(5):
-        account.deposit(amount)
+        with lock:
+            account.deposit(amount)
 
 def withdraw_task(account, amount):
     for _ in range(5):
-        account.withdraw(amount)
+        with lock:
+            account.withdraw(amount)
 
 
 
